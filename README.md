@@ -1,6 +1,5 @@
 # SecDev Course Template
 
-Стартовый шаблон для студенческого репозитория (HSE SecDev 2025).
 
 ## Быстрый старт
 ```bash
@@ -36,11 +35,22 @@ docker run --rm -p 8000:8000 secdev-app
 # или
 docker compose up --build
 ```
+## Entities
+
+`User(id, username, email, password_hash)`
+
+`Wish(id, user_id, title, link, price_estimate, notes)`
 
 ## Эндпойнты
-- `GET /health` → `{"status": "ok"}`
-- `POST /items?name=...` — демо-сущность
-- `GET /items/{id}`
+
+- `GET /wishes`              - прочитать
+- `GET /wishes/{id}`         - прочитать по id
+- `POST /wishes?name=...`    - создать
+- `PUT /wishes/{id}`        - обновить
+- `DELETE /wishes/{id}`      - удалить
+- `GET /price`               - получить цену
+
+
 
 ## Формат ошибок
 Все ошибки — JSON-обёртка:
