@@ -1,2 +1,9 @@
-fastapi==0.112.2
-uvicorn==0.30.5
+fastapi
+uvicorn
+sqlalchemy[asyncio]
+asyncpg
+python-jose[cryptography]
+passlib[argon2]
+pydantic[email]
+pydantic-settings
+python-multipart
