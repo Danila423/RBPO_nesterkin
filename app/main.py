@@ -1,13 +1,19 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+from slowapi.util import get_remote_address
 
 from app.core.database import Base, engine
 from app.routers import auth, price, wishes
 
-app = FastAPI(title="SecDev Course App", version="0.3.1")
+app = FastAPI(title="SecDev Course App", version="0.3.0")
 
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 @app.on_event("startup")
@@ -19,19 +25,6 @@ async def startup():
 @app.get("/health")
 async def health():
     return {"status": "ok"}
-
-
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    return JSONResponse(
-        status_code=500,
-        content={
-            "type": "about:blank",
-            "title": "Internal Server Error",
-            "detail": "An unexpected error occurred.",
-            "instance": str(request.url),
-        },
-    )
 
 
 app.include_router(auth.router)

@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from slowapi import Limiter
-from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,7 +24,9 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=UserRead)
 @limiter.limit("3/minute")
-async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
+async def register(
+    request: Request, user_in: UserCreate, db: AsyncSession = Depends(get_db)
+):
     exists = await db.execute(
         select(User).where(
             (User.email == user_in.email) | (User.username == user_in.username)
@@ -49,7 +49,9 @@ async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
 @router.post("/login")
 @limiter.limit("5/minute")
 async def login(
-    form: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)
+    request: Request,
+    form: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(
         select(User).where(
@@ -75,7 +77,7 @@ async def login(
 
 @router.post("/refresh")
 @limiter.limit("10/minute")
-async def refresh_token(refresh_token: str):
+async def refresh_token(request: Request, refresh_token: str):
     payload = decode_token(refresh_token)
     if not payload or payload.get("type") != "refresh":
         raise HTTPException(status_code=401, detail="Invalid refresh token")
@@ -91,7 +93,8 @@ async def refresh_token(refresh_token: str):
 
 
 @router.post("/logout")
-async def logout(access_token: str):
+@limiter.limit("10/minute")
+async def logout(request: Request, access_token: str):
     payload = decode_token(access_token)
     if not payload:
         raise HTTPException(status_code=400, detail="Invalid token")
@@ -104,16 +107,3 @@ async def logout(access_token: str):
 @router.get("/me", response_model=UserRead)
 async def me(user: User = Depends(get_current_user)):
     return user
-
-
-@router.exception_handler(RateLimitExceeded)
-async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
-    return JSONResponse(
-        status_code=429,
-        content={
-            "type": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
-            "title": "Too Many Requests",
-            "detail": "Rate limit exceeded. Try again later.",
-            "instance": str(request.url),
-        },
-    )
