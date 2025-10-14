@@ -1,5 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
+from slowapi import Limiter
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,10 +20,12 @@ from app.core.security import (
 from app.models.user import User
 from app.schemas.user import UserCreate, UserRead
 
+limiter = Limiter(key_func=get_remote_address)
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=UserRead)
+@limiter.limit("3/minute")
 async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
     exists = await db.execute(
         select(User).where(
@@ -28,6 +34,7 @@ async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
     )
     if exists.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="User already exists")
+
     user = User(
         username=user_in.username,
         email=user_in.email,
@@ -40,6 +47,7 @@ async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/login")
+@limiter.limit("5/minute")
 async def login(
     form: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)
 ):
@@ -61,17 +69,19 @@ async def login(
         {"sub": str(user.id), "role": user.role},
         minutes=60 * 24 * 7,
         token_type="refresh",
-    )  # 7 дней
+    )
     return {"token_type": "bearer", "access_token": access, "refresh_token": refresh}
 
 
 @router.post("/refresh")
+@limiter.limit("10/minute")
 async def refresh_token(refresh_token: str):
     payload = decode_token(refresh_token)
     if not payload or payload.get("type") != "refresh":
-        raise HTTPException(status_code=401, detail="invalid_refresh_token")
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
     user_id = payload.get("sub")
     role = payload.get("role", "user")
+
     access = create_token(
         {"sub": user_id, "role": role},
         minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -84,7 +94,7 @@ async def refresh_token(refresh_token: str):
 async def logout(access_token: str):
     payload = decode_token(access_token)
     if not payload:
-        raise HTTPException(status_code=400, detail="invalid_token")
+        raise HTTPException(status_code=400, detail="Invalid token")
     jti = payload.get("jti")
     if jti:
         blacklist_token_jti(jti)
@@ -94,3 +104,16 @@ async def logout(access_token: str):
 @router.get("/me", response_model=UserRead)
 async def me(user: User = Depends(get_current_user)):
     return user
+
+
+@router.exception_handler(RateLimitExceeded)
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=429,
+        content={
+            "type": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",
+            "title": "Too Many Requests",
+            "detail": "Rate limit exceeded. Try again later.",
+            "instance": str(request.url),
+        },
+    )
