@@ -21,7 +21,7 @@ iniconfig==2.1.0
 isort==5.13.2
 mypy_extensions==1.1.0
 nodeenv==1.9.1
-packaging==25.0
+packaging==24.1
 passlib==1.7.4
 pathspec==0.12.1
 platformdirs==4.4.0
@@ -46,3 +46,5 @@ typing-inspection==0.4.2
 typing_extensions==4.15.0
 uvicorn==0.30.5
 virtualenv==20.34.0
+slowapi==0.1.9
+limits==3.11.0
