@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
@@ -13,7 +13,7 @@ class Wish(Base):
     )
     title = Column(String(100), nullable=False)
     link = Column(String(255))
-    price_estimate = Column(Float)
+    price_estimate = Column(Numeric(10, 2))
     notes = Column(String(255))
 
     owner = relationship("User", backref="wishes")
