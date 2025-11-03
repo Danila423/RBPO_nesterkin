@@ -16,7 +16,9 @@ async def get_with_retries(
     backoff_seconds: float = 0.2,
     timeout: httpx.Timeout = DEFAULT_TIMEOUT,
 ) -> httpx.Response:
-    factory = client_factory or (lambda: httpx.AsyncClient(timeout=timeout, follow_redirects=True))
+    factory = client_factory or (
+        lambda: httpx.AsyncClient(timeout=timeout, follow_redirects=True)
+    )
     attempt = 0
     last_exc: Exception | None = None
     while attempt <= retries:

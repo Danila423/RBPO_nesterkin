@@ -36,7 +36,9 @@ async def test_http_client_retries_then_succeeds():
     async def client_factory():
         return httpx.AsyncClient(timeout=DEFAULT_TIMEOUT, transport=transport)
 
-    resp = await get_with_retries("http://example", client_factory=client_factory, retries=2)
+    resp = await get_with_retries(
+        "http://example", client_factory=client_factory, retries=2
+    )
     assert resp.status_code == 200 and calls["n"] == 2
 
 

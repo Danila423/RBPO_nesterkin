@@ -8,7 +8,9 @@ class Wish(Base):
     __tablename__ = "wishes"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
     title = Column(String(100), nullable=False)
     link = Column(String(255))
     price_estimate = Column(Numeric(10, 2))

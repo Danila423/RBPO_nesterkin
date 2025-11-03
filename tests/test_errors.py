@@ -74,7 +74,9 @@ async def test_delete_wish():
         assert response.status_code == 200
         assert response.json()["status"] == "deleted"
 
-        result = await db.execute(text("SELECT COUNT(*) FROM wishes WHERE id=:id"), {"id": wish.id})
+        result = await db.execute(
+            text("SELECT COUNT(*) FROM wishes WHERE id=:id"), {"id": wish.id}
+        )
         count = result.scalar()
         assert count == 0
 
