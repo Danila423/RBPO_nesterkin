@@ -24,13 +24,9 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=UserRead)
 @limiter.limit("3/minute")
-async def register(
-    request: Request, user_in: UserCreate, db: AsyncSession = Depends(get_db)
-):
+async def register(request: Request, user_in: UserCreate, db: AsyncSession = Depends(get_db)):
     exists = await db.execute(
-        select(User).where(
-            (User.email == user_in.email) | (User.username == user_in.username)
-        )
+        select(User).where((User.email == user_in.email) | (User.username == user_in.username))
     )
     if exists.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="User already exists")
@@ -54,9 +50,7 @@ async def login(
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(
-        select(User).where(
-            (User.email == form.username) | (User.username == form.username)
-        )
+        select(User).where((User.email == form.username) | (User.username == form.username))
     )
     user = result.scalar_one_or_none()
     if not user or not verify_password(form.password, user.password_hash):

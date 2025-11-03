@@ -9,7 +9,7 @@ content-length: 290
 content-type: application/json
 x-correlation-id: 92948e83-10cc-400d-be09-ccf46a5a500f
 
-{"type":"about:blank","title":"Validation Error","status":422,"detail":"Invalid request","correlation_id":"92948e83-10cc-400d-be09-ccf46a5a500f","errors":[{"type":"string_too_short","loc":["query","query"],"msg":"String should have at least 1 character","input":"","ctx":{"min_length":1}}]}%      
+{"type":"about:blank","title":"Validation Error","status":422,"detail":"Invalid request","correlation_id":"92948e83-10cc-400d-be09-ccf46a5a500f","errors":[{"type":"string_too_short","loc":["query","query"],"msg":"String should have at least 1 character","input":"","ctx":{"min_length":1}}]}%
 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                    Dload  Upload   Total   Spent    Left  Speed

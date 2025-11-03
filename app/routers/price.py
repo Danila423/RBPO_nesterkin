@@ -11,7 +11,7 @@ async def get_price(
         min_length=1,
         max_length=50,
         pattern=r"^[\w\s\-\.,/()]+$",
-    )
+    ),
 ):
     # Пример - просто фейковая цена
     fake_price = round(len(query) * 1.23, 2)

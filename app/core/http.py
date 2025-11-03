@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any, Callable
+from typing import Callable
 
 import httpx
-
 
 DEFAULT_TIMEOUT = httpx.Timeout(connect=3.0, read=5.0, write=5.0, pool=5.0)
 
@@ -35,5 +34,3 @@ async def get_with_retries(
     # Should not happen
     assert last_exc is not None
     raise last_exc
-
-

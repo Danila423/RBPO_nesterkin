@@ -10,9 +10,7 @@ async def test_not_found_problem_details_has_correlation_id():
         r = await ac.get("/this-path-does-not-exist")
     assert r.status_code == 404
     body = r.json()
-    assert set(["type", "title", "status", "detail", "correlation_id"]).issubset(
-        body.keys()
-    )
+    assert set(["type", "title", "status", "detail", "correlation_id"]).issubset(body.keys())
     assert isinstance(body["correlation_id"], str) and len(body["correlation_id"]) > 0
 
 

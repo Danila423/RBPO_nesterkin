@@ -31,9 +31,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     cid = getattr(request.state, "correlation_id", None)
     title = "HTTP Error"
     detail = exc.detail if isinstance(exc.detail, str) else "error"
-    return problem(
-        status=exc.status_code, title=title, detail=detail, correlation_id=cid
-    )
+    return problem(status=exc.status_code, title=title, detail=detail, correlation_id=cid)
 
 
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
