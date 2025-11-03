@@ -17,7 +17,9 @@ def sniff_image_type(data: bytes) -> str | None:
     return None
 
 
-def secure_save(base_dir: str | Path, filename_hint: str, data: bytes) -> tuple[bool, str]:
+def secure_save(
+    base_dir: str | Path, filename_hint: str, data: bytes
+) -> tuple[bool, str]:
     if len(data) > MAX_BYTES:
         return False, "too_big"
 
