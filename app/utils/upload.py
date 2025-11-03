@@ -40,4 +40,3 @@ def secure_save(base_dir: str | Path, filename_hint: str, data: bytes) -> tuple[
         f.write(data)
     return True, str(path)
 
-

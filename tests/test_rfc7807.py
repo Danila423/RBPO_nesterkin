@@ -27,4 +27,3 @@ async def test_validation_error_is_rfc7807():
     assert "errors" in body
     assert "correlation_id" in body
 
-

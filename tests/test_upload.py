@@ -13,4 +13,3 @@ def test_sniffs_bad_type(tmp_path: Path):
     ok, reason = secure_save(tmp_path, "x.png", b"not_an_image")
     assert not ok and reason == "bad_type"
 
-
