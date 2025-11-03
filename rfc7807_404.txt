@@ -1,0 +1,8 @@
+HTTP/1.1 404 Not Found
+date: Mon, 03 Nov 2025 15:09:11 GMT
+server: uvicorn
+content-length: 133
+content-type: application/json
+x-correlation-id: 14fa838c-bf82-428a-a314-adfb287eac06
+
+{"type":"about:blank","title":"HTTP Error","status":404,"detail":"Not Found","correlation_id":"14fa838c-bf82-428a-a314-adfb287eac06"}
