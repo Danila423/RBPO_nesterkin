@@ -41,4 +41,3 @@
 - Threat Model: `docs/threat-model/STRIDE.md` (Tampering), `docs/threat-model/RISKS.md`
 - Тесты: `tests/test_upload.py`
 - Коммиты: см. PR p05-secure-coding → main
-

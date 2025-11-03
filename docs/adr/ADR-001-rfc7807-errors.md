@@ -43,4 +43,3 @@
 - Threat Model: `docs/threat-model/STRIDE.md` (Information Disclosure), `docs/threat-model/RISKS.md`
 - Тесты: `tests/test_rfc7807.py`
 - Коммиты: см. PR p05-secure-coding → main
-
