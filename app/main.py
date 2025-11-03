@@ -4,17 +4,17 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
-from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.core.database import Base, engine
-from app.routers import auth, price, wishes
 from app.core.errors import (
     http_exception_handler,
     unhandled_exception_handler,
     validation_exception_handler,
 )
+from app.routers import auth, price, wishes
 
 app = FastAPI(title="SecDev Course App", version="0.3.0")
 
