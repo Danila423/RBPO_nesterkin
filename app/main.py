@@ -9,7 +9,6 @@ from slowapi.util import get_remote_address
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
-from starlette.types import ASGIApp
 
 from app.core.database import Base, engine
 from app.core.errors import (
@@ -29,9 +28,6 @@ app.add_exception_handler(
     RateLimitExceeded,
     _rate_limit_exceeded_handler,  # type: ignore[arg-type]
 )
-
-
-from starlette.types import ASGIApp
 
 
 class CorrelationIdMiddleware(BaseHTTPMiddleware):
