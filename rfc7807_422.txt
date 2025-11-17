@@ -1,0 +1,8 @@
+HTTP/1.1 422 Unprocessable Entity
+date: Mon, 03 Nov 2025 15:07:18 GMT
+server: uvicorn
+content-length: 290
+content-type: application/json
+x-correlation-id: 7d84309e-ff1f-431c-a9c5-577a7436fa2f
+
+{"type":"about:blank","title":"Validation Error","status":422,"detail":"Invalid request","correlation_id":"7d84309e-ff1f-431c-a9c5-577a7436fa2f","errors":[{"type":"string_too_short","loc":["query","query"],"msg":"String should have at least 1 character","input":"","ctx":{"min_length":1}}]}

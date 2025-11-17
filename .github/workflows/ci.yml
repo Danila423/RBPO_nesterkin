@@ -31,8 +31,11 @@ jobs:
           black --check .
           isort --check-only .
 
+      - name: Type check
+        run: mypy --strict --python-version 3.11 .
+
       - name: Tests
-        run: pytest -q
+        run: pytest --cov=app --cov=tests --cov-report=term --cov-report=xml --cov-fail-under=80
 
       - name: Pre-commit (all files)
         run: pre-commit run --all-files

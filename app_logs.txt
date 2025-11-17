@@ -1,0 +1,36 @@
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   290  100   290    0     0  13895      0 --:--:-- --:--:-- --:--:-- 14500
+HTTP/1.1 422 Unprocessable Entity
+date: Mon, 03 Nov 2025 14:59:07 GMT
+server: uvicorn
+content-length: 290
+content-type: application/json
+x-correlation-id: 92948e83-10cc-400d-be09-ccf46a5a500f
+
+{"type":"about:blank","title":"Validation Error","status":422,"detail":"Invalid request","correlation_id":"92948e83-10cc-400d-be09-ccf46a5a500f","errors":[{"type":"string_too_short","loc":["query","query"],"msg":"String should have at least 1 character","input":"","ctx":{"min_length":1}}]}%
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                   Dload  Upload   Total   Spent    Left  Speed
+100   339  100   339    0     0  37978      0 --:--:-- --:--:-- --:--:-- 42375
+HTTP/1.1 422 Unprocessable Entity
+date: Mon, 03 Nov 2025 15:08:54 GMT
+server: uvicorn
+content-length: 339
+content-type: application/json
+x-correlation-id: 6eea273b-c9dc-462c-bcb1-4c469e39e557
+
+{"type":"about:blank","title":"Validation Error","status":422,"detail":"Invalid request","correlation_id":"6eea273b-c9dc-462c-bcb1-4c469e39e557","errors":[{"type":"string_pattern_mismatch","loc":["query","query"],"msg":"String should match pattern '^[\\w\\s\\-\\.,/()]+$'","input":"DROP TABLE;","ctx":{"pattern":"^[\\w\\s\\-\\.,/()]+$"}}]}%
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                   Dload  Upload   Total   Spent    Left  Speed
+100   133  100   133    0     0  58797      0 --:--:-- --:--:-- --:--:-- 66500
+HTTP/1.1 404 Not Found
+date: Mon, 03 Nov 2025 15:09:11 GMT
+server: uvicorn
+content-length: 133
+content-type: application/json
+x-correlation-id: 14fa838c-bf82-428a-a314-adfb287eac06
+
+{"type":"about:blank","title":"HTTP Error","status":404,"detail":"Not Found","correlation_id":"14fa838c-bf82-428a-a314-adfb287eac06"}%

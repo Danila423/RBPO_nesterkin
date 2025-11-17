@@ -1,0 +1,8 @@
+HTTP/1.1 422 Unprocessable Entity
+date: Mon, 03 Nov 2025 15:08:54 GMT
+server: uvicorn
+content-length: 339
+content-type: application/json
+x-correlation-id: 6eea273b-c9dc-462c-bcb1-4c469e39e557
+
+{"type":"about:blank","title":"Validation Error","status":422,"detail":"Invalid request","correlation_id":"6eea273b-c9dc-462c-bcb1-4c469e39e557","errors":[{"type":"string_pattern_mismatch","loc":["query","query"],"msg":"String should match pattern '^[\\w\\s\\-\\.,/()]+$'","input":"DROP TABLE;","ctx":{"pattern":"^[\\w\\s\\-\\.,/()]+$"}}]}
