@@ -6,7 +6,6 @@ import sys
 from pathlib import Path
 from typing import AsyncIterator
 
-import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
