@@ -9,6 +9,7 @@ WORKDIR /app
 
 COPY requirements.txt .
 
+# hadolint ignore=DL3013
 RUN --mount=type=cache,target=/root/.cache \
     python -m pip install --upgrade pip && \
     pip wheel --no-cache-dir --wheel-dir=/wheels -r requirements.txt
@@ -27,6 +28,8 @@ WORKDIR /app
 RUN groupadd --system app && useradd --system --gid app --create-home app
 
 COPY --from=builder /wheels /wheels
+
+# hadolint ignore=DL3013
 RUN --mount=type=cache,target=/root/.cache \
     python -m pip install --no-cache-dir /wheels/* && \
     rm -rf /wheels
