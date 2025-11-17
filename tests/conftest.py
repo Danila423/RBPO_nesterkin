@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import AsyncIterator
 
 import pytest
+import pytest_asyncio
 from httpx import AsyncClient
 
 os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///./test.db")
@@ -25,7 +26,7 @@ from app.core.database import (
 from app.main import app  # noqa: E402
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest_asyncio.fixture(scope="session", autouse=True)
 async def _init_db() -> AsyncIterator[None]:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -34,13 +35,13 @@ async def _init_db() -> AsyncIterator[None]:
         await conn.run_sync(Base.metadata.drop_all)
 
 
-@pytest.fixture()
+@pytest_asyncio.fixture()
 async def db_session() -> AsyncIterator[AsyncSession]:
     async with AsyncSessionLocal() as session:
         yield session
 
 
-@pytest.fixture()
+@pytest_asyncio.fixture()
 async def client(db_session: AsyncSession) -> AsyncIterator[AsyncClient]:
     async def override_get_db() -> AsyncIterator[AsyncSession]:
         async with AsyncSessionLocal() as session:
