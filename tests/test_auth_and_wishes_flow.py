@@ -53,7 +53,12 @@ async def test_wishes_crud(client: AsyncClient) -> None:
     # create wish
     create = await client.post(
         "/wishes/",
-        json={"title": "Item", "link": "https://example.com", "price_estimate": 10.5, "notes": "note"},
+        json={
+            "title": "Item",
+            "link": "https://example.com",
+            "price_estimate": 10.5,
+            "notes": "note",
+        },
         headers=headers,
     )
     assert create.status_code == 200
