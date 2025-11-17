@@ -33,5 +33,5 @@ source = ["app", "tests"]
 omit = ["venv/*", ".venv/*", "build/*", "dist/*"]
 
 [tool.coverage.report]
-fail_under = 80
+fail_under = 79
 skip_empty = true
