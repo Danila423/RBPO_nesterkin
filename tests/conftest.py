@@ -1,4 +1,5 @@
 # tests/conftest.py
+# isort: skip_file
 # ruff: noqa: E402,I001
 import os
 import sys
