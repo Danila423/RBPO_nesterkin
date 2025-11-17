@@ -37,5 +37,32 @@ jobs:
       - name: Tests
         run: pytest --cov=app --cov=tests --cov-report=term --cov-report=xml --cov-fail-under=80
 
+      - name: Hadolint
+        run: |
+          curl -sSL https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64 -o /usr/local/bin/hadolint
+          chmod +x /usr/local/bin/hadolint
+          hadolint -f json Dockerfile > hadolint-report.json
+
+      - name: Build container image
+        run: docker build -t course-app:ci -f Dockerfile .
+
+      - name: Check container user is non-root
+        run: docker run --rm --entrypoint=id course-app:ci -u
+
+      - name: Trivy scan
+        env:
+          TRIVY_VERSION: "0.55.2"
+        run: |
+          curl -sSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin ${TRIVY_VERSION}
+          trivy image --format sarif --output trivy-report.sarif --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 course-app:ci
+
+      - name: Upload scan artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: container-scans
+          path: |
+            hadolint-report.json
+            trivy-report.sarif
+
       - name: Pre-commit (all files)
         run: pre-commit run --all-files
