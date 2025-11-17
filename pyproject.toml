@@ -7,3 +7,19 @@ exclude = ["venv",".venv","build","dist"]
 [tool.isort]
 profile = "black"
 line_length = 100
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+exclude = ["venv", ".venv", "build", "dist"]
+
+[tool.coverage.run]
+branch = true
+source = ["app", "tests"]
+omit = ["venv/*", ".venv/*", "build/*", "dist/*"]
+
+[tool.coverage.report]
+fail_under = 80
+skip_empty = true
