@@ -1,3 +1,5 @@
+from typing import Awaitable, Callable, Union
+
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -7,6 +9,7 @@ from slowapi.util import get_remote_address
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
+from starlette.types import ASGIApp
 
 from app.core.database import Base, engine
 from app.core.errors import (
@@ -22,11 +25,19 @@ app = FastAPI(title="SecDev Course App", version="0.3.0")
 limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(
+    RateLimitExceeded,
+    _rate_limit_exceeded_handler,  # type: ignore[arg-type]
+)
+
+
+from starlette.types import ASGIApp
 
 
 class CorrelationIdMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(
+        self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
+    ) -> Response:
         import uuid
 
         cid = str(uuid.uuid4())
@@ -37,19 +48,30 @@ class CorrelationIdMiddleware(BaseHTTPMiddleware):
 
 
 app.add_middleware(CorrelationIdMiddleware)
-app.add_exception_handler(StarletteHTTPException, http_exception_handler)
-app.add_exception_handler(RequestValidationError, validation_exception_handler)
-app.add_exception_handler(Exception, unhandled_exception_handler)
+ExceptionHandler = Callable[[Request, Exception], Union[Response, Awaitable[Response]]]
+
+app.add_exception_handler(
+    StarletteHTTPException,
+    http_exception_handler,  # type: ignore[arg-type]
+)
+app.add_exception_handler(
+    RequestValidationError,
+    validation_exception_handler,  # type: ignore[arg-type]
+)
+app.add_exception_handler(
+    Exception,
+    unhandled_exception_handler,
+)
 
 
 @app.on_event("startup")
-async def startup():
+async def startup() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
 @app.get("/health")
-async def health():
+async def health() -> dict[str, str]:
     return {"status": "ok"}
 
 

@@ -17,13 +17,13 @@ async def list_wishes(
     offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
-):
+) -> list[Wish]:
     stmt = select(Wish).limit(limit).offset(offset)
     # user видит только свои; admin — все
     if user.role != "admin":
         stmt = stmt.where(Wish.user_id == user.id)
     res = await db.execute(stmt)
-    return res.scalars().all()
+    return list(res.scalars().all())
 
 
 @router.get("/{wish_id}", response_model=WishRead)
@@ -31,7 +31,7 @@ async def get_wish(
     wish_id: int,
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
-):
+) -> Wish:
     res = await db.execute(select(Wish).where(Wish.id == wish_id))
     wish = res.scalar_one_or_none()
     if not wish:
@@ -46,7 +46,7 @@ async def create_wish(
     payload: WishCreate,
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
-):
+) -> Wish:
     wish = Wish(
         title=payload.title,
         link=payload.link,
@@ -66,7 +66,7 @@ async def update_wish(
     payload: WishUpdate,
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
-):
+) -> Wish:
     res = await db.execute(select(Wish).where(Wish.id == wish_id))
     wish = res.scalar_one_or_none()
     if not wish:
@@ -86,7 +86,7 @@ async def delete_wish(
     wish_id: int,
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
-):
+) -> dict[str, str]:
     res = await db.execute(select(Wish).where(Wish.id == wish_id))
     wish = res.scalar_one_or_none()
     if not wish:

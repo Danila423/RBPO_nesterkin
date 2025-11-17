@@ -15,6 +15,16 @@ plugins = ["pydantic.mypy"]
 ignore_missing_imports = true
 exclude = ["venv", ".venv", "build", "dist"]
 
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+allow_untyped_defs = true
+allow_untyped_calls = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["app.routers.*"]
+allow_untyped_defs = true
+
 [tool.coverage.run]
 branch = true
 source = ["app", "tests"]

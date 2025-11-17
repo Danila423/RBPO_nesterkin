@@ -10,7 +10,7 @@ from app.models.wish import Wish
 
 
 @pytest.mark.asyncio
-async def test_create_and_get_wish():
+async def test_create_and_get_wish() -> None:
     async with AsyncSessionLocal() as db:
         user = User(
             username="test_user",
@@ -46,7 +46,7 @@ async def test_create_and_get_wish():
 
 
 @pytest.mark.asyncio
-async def test_delete_wish():
+async def test_delete_wish() -> None:
     async with AsyncSessionLocal() as db:
         user = User(
             username="deleter",

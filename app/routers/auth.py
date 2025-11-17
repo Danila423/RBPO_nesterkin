@@ -26,7 +26,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @limiter.limit("3/minute")
 async def register(
     request: Request, user_in: UserCreate, db: AsyncSession = Depends(get_db)
-):
+) -> User:
     exists = await db.execute(
         select(User).where(
             (User.email == user_in.email) | (User.username == user_in.username)
@@ -52,7 +52,7 @@ async def login(
     request: Request,
     form: OAuth2PasswordRequestForm = Depends(),
     db: AsyncSession = Depends(get_db),
-):
+) -> dict[str, str]:
     result = await db.execute(
         select(User).where(
             (User.email == form.username) | (User.username == form.username)
@@ -77,7 +77,7 @@ async def login(
 
 @router.post("/refresh")
 @limiter.limit("10/minute")
-async def refresh_token(request: Request, refresh_token: str):
+async def refresh_token(request: Request, refresh_token: str) -> dict[str, str]:
     payload = decode_token(refresh_token)
     if not payload or payload.get("type") != "refresh":
         raise HTTPException(status_code=401, detail="Invalid refresh token")
@@ -94,7 +94,7 @@ async def refresh_token(request: Request, refresh_token: str):
 
 @router.post("/logout")
 @limiter.limit("10/minute")
-async def logout(request: Request, access_token: str):
+async def logout(request: Request, access_token: str) -> dict[str, str]:
     payload = decode_token(access_token)
     if not payload:
         raise HTTPException(status_code=400, detail="Invalid token")
@@ -105,5 +105,5 @@ async def logout(request: Request, access_token: str):
 
 
 @router.get("/me", response_model=UserRead)
-async def me(user: User = Depends(get_current_user)):
+async def me(user: User = Depends(get_current_user)) -> User:
     return user
