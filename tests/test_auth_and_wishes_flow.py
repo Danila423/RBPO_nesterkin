@@ -38,7 +38,11 @@ async def test_register_login_and_refresh(client: AsyncClient) -> None:
 async def test_wishes_crud(client: AsyncClient) -> None:
     login = await client.post(
         "/auth/register",
-        json={"username": "wish_user", "email": "wish@example.com", "password": "pass1234"},
+        json={
+            "username": "wish_user",
+            "email": "wish@example.com",
+            "password": "pass1234",
+        },
     )
     assert login.status_code == 200
 

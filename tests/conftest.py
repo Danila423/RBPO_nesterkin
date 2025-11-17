@@ -13,7 +13,13 @@ ROOT = Path(__file__).resolve().parents[1]  # корень репозитори�
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from app.core.database import AsyncSession, AsyncSessionLocal, Base, engine, get_db  # noqa: E402
+from app.core.database import (
+    AsyncSession,
+    AsyncSessionLocal,
+    Base,
+    engine,
+    get_db,
+)  # noqa: E402
 from app.main import app  # noqa: E402
 
 
