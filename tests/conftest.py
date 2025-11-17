@@ -6,22 +6,15 @@ from typing import AsyncIterator
 
 import pytest
 from httpx import AsyncClient
-from app.core.database import (
-    AsyncSession,
-    AsyncSessionLocal,
-    Base,
-    engine,
-    get_db,
-) 
-from app.main import app  
+
+from app.core.database import AsyncSession, AsyncSessionLocal, Base, engine, get_db
+from app.main import app
 
 os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///./test.db")
 
-ROOT = Path(__file__).resolve().parents[1]  # корень репозитория
+ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-
-
 
 
 @pytest.fixture(scope="session", autouse=True)
