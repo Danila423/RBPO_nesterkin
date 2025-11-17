@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Body, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -77,7 +77,9 @@ async def login(
 
 @router.post("/refresh")
 @limiter.limit("10/minute")
-async def refresh_token(request: Request, refresh_token: str) -> dict[str, str]:
+async def refresh_token(
+    request: Request, refresh_token: str = Body(..., embed=True)
+) -> dict[str, str]:
     payload = decode_token(refresh_token)
     if not payload or payload.get("type") != "refresh":
         raise HTTPException(status_code=401, detail="Invalid refresh token")
