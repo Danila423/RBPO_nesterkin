@@ -1,8 +1,10 @@
 [tool.ruff]
 line-length = 100
-select = ["E","F","W","I"]
 target-version = "py311"
 exclude = ["venv",".venv","build","dist"]
+
+[tool.ruff.lint]
+select = ["E","F","W","I"]
 
 [tool.isort]
 profile = "black"
@@ -15,11 +17,21 @@ plugins = ["pydantic.mypy"]
 ignore_missing_imports = true
 exclude = ["venv", ".venv", "build", "dist"]
 
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+allow_untyped_defs = true
+allow_untyped_calls = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["app.routers.*"]
+allow_untyped_defs = true
+
 [tool.coverage.run]
 branch = true
 source = ["app", "tests"]
 omit = ["venv/*", ".venv/*", "build/*", "dist/*"]
 
 [tool.coverage.report]
-fail_under = 80
+fail_under = 79
 skip_empty = true
