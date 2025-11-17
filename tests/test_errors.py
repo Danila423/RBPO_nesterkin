@@ -48,7 +48,7 @@ async def test_create_and_get_wish() -> None:
         assert response.status_code == 200
         body = response.json()
         assert body["title"] == "Test PS5"
-        assert body["price_estimate"] == 499.99
+        assert float(body["price_estimate"]) == 499.99
 
     async with AsyncSessionLocal() as db:
         await db.execute(text("DELETE FROM wishes"))
