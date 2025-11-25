@@ -73,7 +73,9 @@ jobs:
     needs: quality
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: >
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' && github.base_ref == 'main')
     environment:
       name: staging
       url: https://example.com/staging
