@@ -88,16 +88,16 @@ jobs:
       - name: Validate deployment secrets
         env:
           STAGING_DB_URL: ${{ secrets.STAGING_DB_URL }}
-          STAGING_JWT_SECRET: ${{ secrets.STAGING_JWT_SECRET }}
+          STAGING_JWT: ${{ secrets.STAGING_JWT }}
         run: |
           test -n "$STAGING_DB_URL" || (echo "STAGING_DB_URL is required" && exit 1)
-          test -n "$STAGING_JWT_SECRET" || (echo "STAGING_JWT_SECRET is required" && exit 1)
+          test -n "$STAGING_JWT" || (echo "STAGING_JWT is required" && exit 1)
           echo "Secrets for staging deployment are present (values masked)."
 
       - name: Mock deployment
         env:
           STAGING_DB_URL: ${{ secrets.STAGING_DB_URL }}
-          STAGING_JWT_SECRET: ${{ secrets.STAGING_JWT_SECRET }}
+          STAGING_JWT: ${{ secrets.STAGING_JWT }}
           STAGING_API_URL: ${{ vars.STAGING_API_URL }}
         run: |
           echo "Starting staged deployment promotion..."
