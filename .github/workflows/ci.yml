@@ -104,12 +104,12 @@ jobs:
           ls -R stage-reports || true
           echo "Deploying application build to ${STAGING_API_URL:-https://example.com/staging} (dry-run)."
           python - <<'PY'
-import textwrap, json, os
-manifest = {
-    "target": os.environ.get("STAGING_API_URL", "https://example.com/staging"),
-    "db_url_masked": "***",
-    "jwt_secret_masked": "***",
-}
-print("Rendered deployment manifest:")
-print(textwrap.indent(json.dumps(manifest, indent=2), "  "))
-PY
+          import textwrap, json, os
+          manifest = {
+              "target": os.environ.get("STAGING_API_URL", "https://example.com/staging"),
+              "db_url_masked": "***",
+              "jwt_secret_masked": "***",
+          }
+          print("Rendered deployment manifest:")
+          print(textwrap.indent(json.dumps(manifest, indent=2), "  "))
+          PY
