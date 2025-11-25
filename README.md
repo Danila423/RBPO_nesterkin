@@ -1,5 +1,7 @@
 # SecDev Course Template
 
+![CI/CD](https://github.com/Danila423/RBPO_nesterkin/actions/workflows/ci.yml/badge.svg?branch=main)
+
 
 ## Быстрый старт
 ```bash
@@ -24,9 +26,11 @@ pre-commit run --all-files
 pytest -q
 ```
 
-## CI
-В репозитории настроен workflow **CI** (GitHub Actions) — required check для `main`.
-Badge добавится автоматически после загрузки шаблона в GitHub.
+## CI/CD
+Workflow `.github/workflows/ci.yml` запускается на push и pull_request в матрице Python 3.11/3.12,
+кэширует pip, выполняет `ruff`, `black --check`, `isort --check-only`, `pytest` с покрытием и сохраняет
+отчёты (`reports/`) артефактами. При успешном push в `main` выполняется мок-деплой в окружение
+`staging`, что эмулирует CD-промоушн.
 
 ## Контейнеры
 ```bash
