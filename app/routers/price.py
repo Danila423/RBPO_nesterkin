@@ -12,7 +12,7 @@ async def get_price(
         max_length=50,
         pattern=r"^[\w\s\-\.,/()]+$",
     ),
-):
+) -> dict[str, str | float]:
     # Пример - просто фейковая цена
     fake_price = round(len(query) * 1.23, 2)
     return {"query": query, "estimated_price": fake_price}

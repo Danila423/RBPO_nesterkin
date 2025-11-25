@@ -5,7 +5,7 @@ from app.main import app
 
 
 @pytest.mark.asyncio
-async def test_not_found_problem_details_has_correlation_id():
+async def test_not_found_problem_details_has_correlation_id() -> None:
     async with AsyncClient(app=app, base_url="http://test") as ac:
         r = await ac.get("/this-path-does-not-exist")
     assert r.status_code == 404
@@ -17,7 +17,7 @@ async def test_not_found_problem_details_has_correlation_id():
 
 
 @pytest.mark.asyncio
-async def test_validation_error_is_rfc7807():
+async def test_validation_error_is_rfc7807() -> None:
     async with AsyncClient(app=app, base_url="http://test") as ac:
         r = await ac.get("/price/")
     assert r.status_code == 422

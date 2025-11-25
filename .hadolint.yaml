@@ -1,0 +1,5 @@
+failure-threshold: warning
+format: tty
+no-color: true
+ignored:
+  - DL3042 # runtime pip install with --no-cache-dir already; wheel copy is acceptable

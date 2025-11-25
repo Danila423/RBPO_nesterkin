@@ -6,7 +6,7 @@ from app.main import app
 
 
 @pytest.mark.asyncio
-async def test_price_validation_rejects_long_query():
+async def test_price_validation_rejects_long_query() -> None:
     long_q = "x" * 51
     async with httpx.AsyncClient(app=app, base_url="http://test") as ac:
         r = await ac.get("/price/", params={"query": long_q})
@@ -14,7 +14,7 @@ async def test_price_validation_rejects_long_query():
 
 
 @pytest.mark.asyncio
-async def test_price_validation_rejects_bad_chars():
+async def test_price_validation_rejects_bad_chars() -> None:
     bad = "DROP TABLE;"
     async with httpx.AsyncClient(app=app, base_url="http://test") as ac:
         r = await ac.get("/price/", params={"query": bad})
@@ -22,7 +22,7 @@ async def test_price_validation_rejects_bad_chars():
 
 
 @pytest.mark.asyncio
-async def test_http_client_retries_then_succeeds():
+async def test_http_client_retries_then_succeeds() -> None:
     calls = {"n": 0}
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -33,7 +33,7 @@ async def test_http_client_retries_then_succeeds():
 
     transport = httpx.MockTransport(handler)
 
-    async def client_factory():
+    def client_factory() -> httpx.AsyncClient:
         return httpx.AsyncClient(timeout=DEFAULT_TIMEOUT, transport=transport)
 
     resp = await get_with_retries(
@@ -43,13 +43,13 @@ async def test_http_client_retries_then_succeeds():
 
 
 @pytest.mark.asyncio
-async def test_http_client_eventual_timeout():
+async def test_http_client_eventual_timeout() -> None:
     def handler(_request: httpx.Request) -> httpx.Response:
         raise httpx.ReadTimeout("timeout")
 
     transport = httpx.MockTransport(handler)
 
-    async def client_factory():
+    def client_factory() -> httpx.AsyncClient:
         timeout = httpx.Timeout(0.01, read=0.01, connect=0.01)
         return httpx.AsyncClient(timeout=timeout, transport=transport)
 

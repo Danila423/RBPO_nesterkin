@@ -13,7 +13,7 @@ def problem(
     type_: str = "about:blank",
     correlation_id: str | None = None,
     extras: Dict[str, Any] | None = None,
-):
+) -> JSONResponse:
     payload: Dict[str, Any] = {
         "type": type_,
         "title": title,
@@ -27,7 +27,9 @@ def problem(
     return JSONResponse(payload, status_code=status)
 
 
-async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+async def http_exception_handler(
+    request: Request, exc: StarletteHTTPException
+) -> JSONResponse:
     cid = getattr(request.state, "correlation_id", None)
     title = "HTTP Error"
     detail = exc.detail if isinstance(exc.detail, str) else "error"
@@ -36,7 +38,9 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     )
 
 
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
+async def validation_exception_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
     cid = getattr(request.state, "correlation_id", None)
     return problem(
         status=422,
@@ -47,7 +51,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
 
 
-async def unhandled_exception_handler(request: Request, exc: Exception):
+async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     cid = getattr(request.state, "correlation_id", None)
     return problem(
         status=500,
