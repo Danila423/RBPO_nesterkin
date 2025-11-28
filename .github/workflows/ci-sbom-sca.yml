@@ -33,13 +33,13 @@ jobs:
         run: |
           mkdir -p EVIDENCE/P09
 
-      - name: Generate SBOM (Syft CycloneDX)
+      - name: Generate SBOM (Syft syft-json)
         run: |
           set -euo pipefail
           docker run --rm \
             -e SYFT_LOG_LEVEL=error \
             -v "$PWD:/work" -w /work "$SYFT_IMAGE" \
-            dir:. -o cyclonedx-json=EVIDENCE/P09/sbom.json
+            dir:. -o syft-json=EVIDENCE/P09/sbom.json
 
       - name: SCA scan (Grype via SBOM)
         run: |
