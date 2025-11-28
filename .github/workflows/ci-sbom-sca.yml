@@ -33,19 +33,19 @@ jobs:
         run: |
           mkdir -p EVIDENCE/P09
 
-      - name: Generate SBOM (Syft syft-json)
+      - name: Generate SBOM (Syft CycloneDX)
         run: |
           set -euo pipefail
           docker run --rm \
             -e SYFT_LOG_LEVEL=error \
             -v "$PWD:/work" -w /work "$SYFT_IMAGE" \
-            dir:. -o syft-json=EVIDENCE/P09/sbom.json
+            dir:. -o cyclonedx-json=EVIDENCE/P09/sbom.json
 
-      - name: SCA scan (Grype via SBOM)
+      - name: SCA scan (Grype on dir)
         run: |
           set -euo pipefail
           docker run --rm -v "$PWD:/work" -w /work "$GRYPE_IMAGE" \
-            sbom:/work/EVIDENCE/P09/sbom.json -o json > EVIDENCE/P09/sca_report.json
+            dir:/work -o json > EVIDENCE/P09/sca_report.json
           echo "# SCA summary" > EVIDENCE/P09/sca_summary.md
           jq '([.matches[].vulnerability.severity] // [])
             | group_by(.)
