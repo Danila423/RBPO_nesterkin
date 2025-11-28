@@ -1,0 +1,28 @@
+{
+  "source": "sbom:/work/EVIDENCE/P09/sbom.json",
+  "generated_at": "2024-01-01T00:00:00Z",
+  "tool": {
+    "name": "Grype",
+    "version": "(pinned via ci-sbom-sca.yml)"
+  },
+  "matches": [
+    {
+      "vulnerability": {
+        "id": "CVE-2023-5678",
+        "severity": "High",
+        "dataSource": "https://github.com/anchore/grype",
+        "recordSource": "python::pip",
+        "description": "Demo placeholder entry; actual findings will be produced in CI."
+      },
+      "artifact": {
+        "name": "fastapi",
+        "version": "0.112.2",
+        "type": "python"
+      },
+      "fix": {
+        "state": "not-fixed",
+        "versions": []
+      }
+    }
+  ]
+}
