@@ -10,3 +10,4 @@
 | NFR-06 | Логирование критичных действий | ≥95% действий типа create/update/delete фиксируются в аудит-логах | audit_coverage ≥ 95% | e2e + log check | wishes / auth | High |
 | NFR-07 | Маскирование персональных данных | В логах и ответах маскируются email, токены, пароли | 100% логов без PII | pytest + review логов | core / auth | Medium |
 | NFR-08 | Мониторинг уязвимостей зависимостей | High/Critical устраняются ≤ 7 дней | ≤ 7 дней SLA | CI SCA (pip-audit / Dependabot) | build | Medium |
+| NFR-09 | Static AppSec (SAST + secrets) | Semgrep (p/ci + project rules) и Gitleaks запускаются на каждый push/PR; результаты триажатся в рамках P10 | Job зелёный, findings разобраны ≤ 2 дней | GitHub Actions `Security - SAST & Secrets`, evidence в `EVIDENCE/P10/` | build / security | Medium |

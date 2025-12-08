@@ -1,0 +1,15 @@
+title = "Course project base gitleaks config"
+
+[extend]
+# Use builtin gitleaks rules as a baseline
+
+[allowlist]
+description = "Ignore generated evidence and known non-sensitive fixtures"
+paths = [
+  '''EVIDENCE/''',
+  '''docs/threat-model/''',
+]
+regexes = [
+  '''CHANGE_ME''', # local dev JWT secret placeholder
+  '''postgres:postgres''', # default compose DB creds (tracked separately in backlog)
+]

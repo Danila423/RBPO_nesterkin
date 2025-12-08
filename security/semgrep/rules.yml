@@ -1,0 +1,36 @@
+rules:
+  - id: fastapi-hardcoded-jwt-secret
+    languages: [python]
+    message: "Hardcoded JWT secret key detected. Load secrets from env/secret storage instead of shipping them in the repo."
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      owasp: "A02:2021 - Cryptographic Failures"
+      references:
+        - https://owasp.org/Top10/A02_2021-Cryptographic_Failures/
+    patterns:
+      - pattern-either:
+          - pattern: JWT_SECRET_KEY = $VAL
+          - pattern: JWT_SECRET_KEY: $TYPE = $VAL
+      - metavariable-pattern:
+          metavariable: $VAL
+          pattern: '"$ANY"'
+
+  - id: fastapi-hardcoded-db-url
+    languages: [python]
+    message: "Hardcoded SQLAlchemy DATABASE_URL with inline credentials."
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-522: Insufficiently Protected Credentials"
+      owasp: "A04:2021 - Insecure Design"
+      references:
+        - https://owasp.org/Top10/A04_2021-Insecure_Design/
+    patterns:
+      - pattern-either:
+          - pattern: DATABASE_URL = $VAL
+          - pattern: DATABASE_URL: $TYPE = $VAL
+      - metavariable-pattern:
+          metavariable: $VAL
+          pattern: '"$ANY"'
