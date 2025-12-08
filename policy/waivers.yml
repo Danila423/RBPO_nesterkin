@@ -1,0 +1,22 @@
+# policy/waivers.yml — управляемые исключения для практики P09.
+# Политика:
+#   * Critical/High — обязательный фикс либо waiver максимум на 7 дней.
+#   * Medium — план фикса в течение 14 дней (waiver фиксирует дедлайн).
+#   * Low/Info — на усмотрение команды.
+# Каждый waiver ссылается на Issue/PR с описанием и пересматривается до expires_at.
+
+waivers:
+  - id: "CVE-2023-5360"
+    package: "asyncpg"
+    version: "0.30.0"
+    severity: "High"
+    detected_at: "2024-12-01"
+    reported_in: "https://github.com/Danila423/course-project/pull/99"
+    reason: >-
+      Уязвимость затрагивает код пути репликации, который в проекте отключён.
+      Обновление до 0.30.1 требует миграции схемы и ломает совместимость FastAPI 0.112.x.
+      План: обновиться до FastAPI >=0.113 и asyncpg 0.30.1 сразу после тестов.
+    mitigation: >-
+      Доступ к базе ограничен приватной сетью; дополнительные проверки TLS включены.
+    expires_at: "2024-12-08"
+    approved_by: "security@course-project"

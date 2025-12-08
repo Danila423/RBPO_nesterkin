@@ -1,0 +1,74 @@
+name: Security - SBOM & SCA
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "**/*.py"
+      - "requirements*.txt"
+      - ".github/workflows/ci-sbom-sca.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SYFT_IMAGE: anchore/syft:v1.20.0
+  GRYPE_IMAGE: anchore/grype:v0.73.0
+  FAIL_ON_HIGH_CRITICAL: "false"
+
+jobs:
+  sbom_sca:
+    name: SBOM and SCA checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure evidence directories
+        run: |
+          mkdir -p EVIDENCE/P09
+
+      - name: Generate SBOM (Syft CycloneDX)
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -e SYFT_LOG_LEVEL=error \
+            -v "$PWD:/work" -w /work "$SYFT_IMAGE" \
+            dir:. -o cyclonedx-json=EVIDENCE/P09/sbom.json
+
+      - name: SCA scan (Grype on dir)
+        run: |
+          set -euo pipefail
+          docker run --rm -v "$PWD:/work" -w /work "$GRYPE_IMAGE" \
+            dir:/work -o json > EVIDENCE/P09/sca_report.json
+          echo "# SCA summary" > EVIDENCE/P09/sca_summary.md
+          jq '([.matches[].vulnerability.severity] // [])
+            | group_by(.)
+            | map({ (.[0]): length })
+            | add' EVIDENCE/P09/sca_report.json \
+            | tee -a EVIDENCE/P09/sca_summary.md || echo "{}" >> EVIDENCE/P09/sca_summary.md
+
+      - name: Optional gate on High/Critical
+        if: env.FAIL_ON_HIGH_CRITICAL == 'true'
+        run: |
+          set -euo pipefail
+          high_count=$(jq '[.matches[].vulnerability.severity // ""] 
+            | map(select(. == "High" or . == "Critical"))
+            | length' EVIDENCE/P09/sca_report.json)
+          echo "High/Critical findings: $high_count"
+          if [ "$high_count" -gt 0 ]; then
+            echo "Blocking build because FAIL_ON_HIGH_CRITICAL is enabled."
+            exit 1
+          fi
+
+      - name: Upload SBOM/SCA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: P09_EVIDENCE
+          path: EVIDENCE/P09

@@ -1,0 +1,42 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2024-01-01T00:00:00Z",
+    "tools": [
+      {
+        "vendor": "Anchore",
+        "name": "Syft",
+        "version": "(pinned via ci-sbom-sca.yml)"
+      }
+    ],
+    "authors": [
+      {
+        "name": "Security - SBOM & SCA workflow",
+        "email": "devsec@example.com"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "name": "course-project",
+      "version": "dev",
+      "bom-ref": "course-project"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "fastapi",
+      "version": "0.112.2",
+      "purl": "pkg:pypi/fastapi@0.112.2"
+    }
+  ],
+  "componentsProperties": [
+    {
+      "componentName": "fastapi",
+      "name": "evidence",
+      "value": "Placeholder SBOM shipped with repo; workflow overwrites file with real data per commit."
+    }
+  ]
+}
