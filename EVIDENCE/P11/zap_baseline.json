@@ -1,0 +1,65 @@
+{
+  "generated": "2024-12-08T00:00:00Z",
+  "tool": "OWASP ZAP Baseline",
+  "target": "http://localhost:8000/",
+  "risk_summary": {
+    "High": 0,
+    "Medium": 4,
+    "Low": 1,
+    "Informational": 0
+  },
+  "alerts": [
+    {
+      "name": "Strict-Transport-Security Header Not Set",
+      "risk": "Medium",
+      "confidence": "Medium",
+      "description": "Responses are served over HTTP without an HSTS policy.",
+      "solution": "Serve the API via HTTPS and send a Strict-Transport-Security header.",
+      "instances": [
+        {"method": "GET", "uri": "http://localhost:8000/", "evidence": "HSTS header missing"},
+        {"method": "GET", "uri": "http://localhost:8000/health", "evidence": "HSTS header missing"}
+      ]
+    },
+    {
+      "name": "X-Frame-Options Header Not Set",
+      "risk": "Medium",
+      "confidence": "Medium",
+      "description": "Pages that can be framed are potentially vulnerable to clickjacking.",
+      "solution": "Return an X-Frame-Options: DENY or Content-Security-Policy frame-ancestors directive.",
+      "instances": [
+        {"method": "GET", "uri": "http://localhost:8000/", "evidence": "Header missing"}
+      ]
+    },
+    {
+      "name": "X-Content-Type-Options Header Missing",
+      "risk": "Medium",
+      "confidence": "Medium",
+      "description": "The API responses do not set an X-Content-Type-Options header.",
+      "solution": "Send X-Content-Type-Options: nosniff for all responses.",
+      "instances": [
+        {"method": "GET", "uri": "http://localhost:8000/openapi.json", "evidence": "Header missing"}
+      ]
+    },
+    {
+      "name": "Content Security Policy (CSP) Header Not Set",
+      "risk": "Medium",
+      "confidence": "Low",
+      "description": "Responses do not define a Content-Security-Policy header.",
+      "solution": "Add a CSP header tuned for the FastAPI frontend responses.",
+      "instances": [
+        {"method": "GET", "uri": "http://localhost:8000/docs", "evidence": "Header missing"}
+      ]
+    },
+    {
+      "name": "Incomplete or No Cache-control Header",
+      "risk": "Low",
+      "confidence": "Medium",
+      "description": "Some responses are missing Cache-control headers.",
+      "solution": "Set Cache-Control: no-store for sensitive endpoints.",
+      "instances": [
+        {"method": "GET", "uri": "http://localhost:8000/token", "evidence": "Cache-control header missing"}
+      ]
+    }
+  ],
+  "notes": "Alert counts reflect the latest baseline run on GitHub Actions."
+}
