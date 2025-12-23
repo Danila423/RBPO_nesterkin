@@ -58,7 +58,12 @@ jobs:
           set -euo pipefail
           docker run --rm -v "$PWD:/work" -w /work "$CHECKOV_IMAGE" \
             checkov -d iac -o json --config-file security/checkov.yaml \
-            > EVIDENCE/P12/checkov_report.json || true
+            --output-file-path /work/EVIDENCE/P12 || true
+          if [ -f EVIDENCE/P12/results_json.json ]; then
+            mv EVIDENCE/P12/results_json.json EVIDENCE/P12/checkov_report.json
+          elif [ ! -s EVIDENCE/P12/checkov_report.json ]; then
+            echo '{"note":"checkov output missing - see workflow logs"}' > EVIDENCE/P12/checkov_report.json
+          fi
 
       - name: Trivy (image)
         run: |
