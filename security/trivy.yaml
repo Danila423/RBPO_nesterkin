@@ -1,0 +1,9 @@
+format: json
+severity:
+  - HIGH
+  - CRITICAL
+ignore-unfixed: true
+vuln-type:
+  - os
+  - library
+quiet: true
