@@ -1,0 +1,83 @@
+name: P12 - IaC & Container Security
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - p12-iac-container
+    paths:
+      - "Dockerfile"
+      - "compose.yaml"
+      - "docker-compose.yml"
+      - "iac/**"
+      - "k8s/**"
+      - "deploy/**"
+      - "security/hadolint.yaml"
+      - "security/checkov.yaml"
+      - "security/trivy.yaml"
+      - ".github/workflows/ci-p12-iac-container.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HADOLINT_IMAGE: hadolint/hadolint:v2.12.0
+  CHECKOV_IMAGE: bridgecrew/checkov:3.2.340
+  TRIVY_IMAGE: aquasec/trivy:0.50.2
+  IMAGE_NAME: course-app:local
+
+jobs:
+  iac_container_security:
+    name: IaC and container security checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure evidence directory
+        run: mkdir -p EVIDENCE/P12
+
+      - name: Build image
+        run: docker build -t "$IMAGE_NAME" .
+
+      - name: Hadolint (Dockerfile)
+        run: |
+          set -euo pipefail
+          docker run --rm -v "$PWD:/work" -w /work "$HADOLINT_IMAGE" \
+            hadolint -f json -c security/hadolint.yaml Dockerfile \
+            > EVIDENCE/P12/hadolint_report.json || true
+
+      - name: Checkov (IaC)
+        run: |
+          set -euo pipefail
+          docker run --rm -v "$PWD:/work" -w /work "$CHECKOV_IMAGE" \
+            checkov -d iac -o json --config-file security/checkov.yaml \
+            --output-file-path /work/EVIDENCE/P12 || true
+          if [ -f EVIDENCE/P12/results_json.json ]; then
+            mv EVIDENCE/P12/results_json.json EVIDENCE/P12/checkov_report.json
+          elif [ ! -s EVIDENCE/P12/checkov_report.json ]; then
+            echo '{"note":"checkov output missing - see workflow logs"}' > EVIDENCE/P12/checkov_report.json
+          fi
+
+      - name: Trivy (image)
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$PWD:/work" -w /work "$TRIVY_IMAGE" \
+            image --config security/trivy.yaml \
+            --output EVIDENCE/P12/trivy_report.json \
+            --exit-code 0 "$IMAGE_NAME" || true
+
+      - name: Upload P12 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: P12_EVIDENCE
+          path: EVIDENCE/P12

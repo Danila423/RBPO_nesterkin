@@ -1,0 +1,5 @@
+soft-fail: true
+compact: true
+framework:
+  - kubernetes
+  - docker_compose
